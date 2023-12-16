@@ -4,6 +4,9 @@ import sys
 import logging
 import argparse
 import configparser
+import pwd
+
+
 from shutil import copyfile
 from string import Template
 
@@ -75,7 +78,8 @@ class DetailedFormatter(logging.Formatter):
     def __init__(self, fmt='%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s',
                  datefmt='%Y-%m-%d %H:%M:%S', *args) -> None:
         super().__init__(fmt, datefmt, *args)
-        username = os.getlogin()
+        username = pwd.getpwuid(os.getuid()).pw_name
+        #os.getlogin() 
         self.anonymize = re.compile(r'([\\/]*)' + re_escape(username) + '([\\/]*)', flags=re.I)
 
     def format(self, record):
